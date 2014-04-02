@@ -10,8 +10,8 @@ cookbook 'nginx', :git => 'git://github.com/opscode-cookbooks/nginx.git'
 
 # cookbook 'apache2', '>= 1.0.0'
 
-# cookbook 'rvm',
-#   :git => 'https://github.com/fnichol/chef-rvm'
+cookbook 'rvm',
+  :git => 'https://github.com/fnichol/chef-rvm'
 
 # cookbook 'postgresql',
 #   :git => 'https://github.com/findsyou/cookbooks',
