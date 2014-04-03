@@ -1,4 +1,5 @@
 default[:app][:name] = "minemart"
+default[:app][:domain] = "cbrwizard.com"
 default[:app][:web_dir] = "/var/data/www/apps/minemart"
 
 default[:rvm][:default_ruby] = "ruby-2.0.0-p353"
@@ -11,9 +12,3 @@ default[:nginx][:source][:modules] = [
   "nginx::http_ssl_module",
   "nginx::http_gzip_static_module" ]
 default[:nginx][:passenger][:version] = "4.0.37"
-
-default[:run_list] = [
-  "recipe[nginx::source]",
-  "recipe[rvm::system_install]",
-  "recipe[minemart]"
-]

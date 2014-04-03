@@ -1,9 +1,70 @@
-server {
-    listen 80 default;
+#user <%= node[:user][:name] %>;
 
-    access_log <%= node.app.web_dir %>/logs/nginx_access.log;
-    error_log <%= node.app.web_dir %>/logs/nginx_error.log;
+worker_processes  2;
+timer_resolution 100ms;
+worker_priority -5;
 
-    keepalive_timeout 10;
-    root <%= node.app.web_dir %>/public;
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+pid        logs/nginx.pid;
+
+events {
+  use epoll;
+  worker_connections  2048;
+}
+
+http {
+  passenger_root /home/<%= node[:user][:name] %>/.rvm/gems/<%= node[:rvm][:default_ruby] %>/gems/passenger-4.0.37;
+  passenger_ruby /home/<%= node[:user][:name] %>/.rvm/wrappers/<%= node[:rvm][:default_ruby] %>/ruby;
+
+  include       mime.types;
+  default_type  application/octet-stream;
+
+  #access_log  logs/access.log  main;
+
+  sendfile        on;
+  tcp_nopush     on;
+
+  keepalive_timeout  65;
+
+  passenger_pool_idle_time 1000;
+
+  gzip on;
+  gzip_min_length 1100;
+  gzip_buffers 64 8k;
+  gzip_comp_level 9;
+  gzip_http_version 1.0;
+  gzip_proxied any;
+  gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype font/x-woff;
+  gzip_vary on;
+
+  server {
+    listen       80;
+    server_name  <%= node[:app][:domain] %>;
+    root /home/cbrwizard/www/DOMAIN/current/public;
+    passenger_enabled on;
+
+    client_max_body_size 10M;
+    client_body_buffer_size 512k;
+
+    location ~ ^/(assets|images|javascripts|stylesheets|swfs|system|fonts)/ {
+      root /home/cbrwizard/www/brainlook.org/shared;
+      gzip_static on;
+      expires 50d;
+      add_header Cache-Control public;
+
+      open_file_cache          max=1000 inactive=500s;
+      open_file_cache_valid    600s;
+      open_file_cache_errors   on;
+
+      if ($request_filename ~* ^.*?\.(eot)|(ttf)|(woff)|(svg)|(otf)$){
+        add_header Access-Control-Allow-Origin *;
+      }
+      break;
+    }
+    passenger_spawn_method smart;
+    rails_app_spawner_idle_time 0;
+  }
 }
