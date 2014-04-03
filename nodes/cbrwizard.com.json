@@ -1,6 +1,6 @@
 {
   "run_list": [
-    "recipe[rvm::system]",
+    "recipe[rvm::user]",
     "recipe[nginx::source]",
     "recipe[minemart]"
   ]

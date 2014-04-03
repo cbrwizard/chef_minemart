@@ -2,7 +2,11 @@ default[:app][:name] = "minemart"
 default[:app][:domain] = "cbrwizard.com"
 default[:app][:web_dir] = "/var/data/www/apps/minemart"
 
-default[:rvm][:default_ruby] = "ruby-2.0.0-p353"
+default[:rvm][:user_installs] = [{
+  :user => 'minemart',
+  :default_ruby => "ruby-2.0.0-p353"
+}]
+
 default[:user][:name] = "minemart"
 
 default[:nginx][:version] = "1.4.4"
