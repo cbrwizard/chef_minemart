@@ -1,18 +1,4 @@
 {
-  "app": {
-    "name": "minemart",
-    "web_dir": "/var/data/www/apps/minemart"
-  },
-  "user":{
-    "name": "root"
-  },
-  "nginx": {
-    "version": "1.4.4",
-    "default_site_enabled": true,
-    "source": {
-      "modules": ["nginx::http_gzip_static_module", "nginx::http_ssl_module"]
-    }
-  },
   "run_list": [
     "recipe[nginx::source]",
     "recipe[rvm::system]",
