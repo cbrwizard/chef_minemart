@@ -14,7 +14,8 @@ default[:nginx][:default_site_enabled] = true
 default[:nginx][:source][:modules] = [
   "nginx::http_gzip_static_module",
   "nginx::http_ssl_module",
-  "nginx::http_gzip_static_module"]
+  "nginx::http_gzip_static_module",
+  "nginx::passenger"]
 
 default[:nginx][:passenger][:version] = "4.0.37"
 default[:nginx][:passenger][:ruby] = "/home/#{user[:name]}/.rvm/wrappers/#{rvm[:default_ruby]}/wrappers/ruby"

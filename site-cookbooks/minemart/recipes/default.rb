@@ -1,4 +1,10 @@
+# Note: user is added manually because of complicated things
+
+# add github to list of knows hosts
+ssh_known_hosts_entry 'github.com'
+
 # fixes locales
+# @todo: make it launch only once
 bash "fix_locales" do
   user "root"
   code <<-EOH
@@ -7,6 +13,7 @@ bash "fix_locales" do
   EOH
 end
 
+#--installs needed packages
 #postgresql
 package "postgresql-9.1"
 package "libpq-dev"
@@ -16,19 +23,17 @@ package "postgresql-contrib"
 package "tcl8.5"
 package "redis-server"
 
-#install main gems
+#--installs main gems
+gem_package 'bundler'
 gem_package "rails" do
   version "4.0.0"
 end
 gem_package 'capistrano' do
   version '2.15'
 end
-gem_package 'bundler'
-gem_package 'passenger' do
-  version node['nginx']['passenger']['version']
-end
 package 'nodejs'
 package 'libcurl4-openssl-dev'
+
 
 # set up nginx
 # creates logs
@@ -61,18 +66,9 @@ cookbook_file "#{node.app.web_dir}/public/index.html" do
   action :create_if_missing
 end
 
-# adds memory for install stuff
-bash "add_swap" do
-  user "minemart"
-  code <<-EOH
-    sudo fallocate -l 1024m /var/spool/swap
-    sudo mkswap /var/spool/swap
-    sudo swapon /var/spool/swap
-  EOH
-end
-
 # dependencies for opencv
-['libmagickwand-dev', 'libopencv-dev', 'build-essential', 'checkinstall', 'cmake', 'pkg-config', 'yasm', 'libtiff4-dev', 'libjpeg-dev', 'libjasper-dev', 'libavcodec-dev', 'libavformat-dev', 'libswscale-dev', 'libdc1394-22-dev', 'libxine-dev', 'libgstreamer0.10-dev', 'libgstreamer-plugins-base0.10-dev', 'libv4l-dev', 'python-dev', 'python-numpy', 'libtbb-dev', 'libqt4-dev', 'libgtk2.0-dev', 'qt5-default',  'qttools5-dev-tools' ].each do |apt|
+# @todo find and remove not needed packages
+['libmagickwand-dev', 'libopencv-dev', 'build-essential', 'checkinstall', 'cmake', 'yasm', 'libjpeg-dev', 'libjasper-dev', 'libavcodec-dev', 'libavformat-dev', 'libswscale-dev', 'libdc1394-22-dev', 'libxine-dev', 'libgstreamer0.10-dev', 'libgstreamer-plugins-base0.10-dev', 'libv4l-dev', 'python-dev', 'python-numpy', 'libtbb-dev', 'libqt4-dev', 'libgtk2.0-dev', 'qt5-default',  'qttools5-dev-tools' ].each do |apt|
   package apt do
     action :upgrade
     options "--force-yes"
@@ -89,8 +85,8 @@ bash "download_opencv" do
 end
 
 bash "install_opencv" do
-  not_if system("pkg-config --modversion opencv") == node.opencv.version
-  cwd "/home/#{node.user.name}/opencv-#{node.opencv.version}1/build"
+  not_if {system("pkg-config --modversion opencv"); $?.success?}
+  cwd "/home/#{node.user.name}/opencv-#{node.opencv.version}/build"
   code <<-EOH
     cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D BUILD_EXAMPLES=ON -D WITH_QT=ON -D WITH_OPENGL=ON .. && make && sudo make install && sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf' &&  sudo ldconfig
   EOH

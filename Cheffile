@@ -4,8 +4,8 @@
 site 'http://community.opscode.com/api/v1'
 
 cookbook 'runit'
+cookbook 'ssh_known_hosts'
 cookbook 'nginx', :git => 'git://github.com/opscode-cookbooks/nginx.git'
-cookbook 'opencv', :git => 'https://github.com/elitmus/opencv-cookbook.git'
 cookbook 'rvm', :git => 'https://github.com/fnichol/chef-rvm'
 
 # cookbook 'postgresql',
