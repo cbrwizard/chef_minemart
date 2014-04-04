@@ -37,19 +37,19 @@ package 'libcurl4-openssl-dev'
 
 # set up nginx
 # creates logs
-%w(public logs).each do |dir|
-  directory "#{node.app.web_dir}/#{dir}" do
-    owner node.user.name
-    mode "0755"
-    recursive true
-  end
-end
-
-# adds nginx.conf
-template "#{node.nginx.dir}/sites-available/#{node.app.name}.conf" do
-  source "nginx.conf.erb"
-  mode "0644"
-end
+# %w(public logs).each do |dir|
+#   directory "#{node.app.web_dir}/#{dir}" do
+#     owner node.user.name
+#     mode "0755"
+#     recursive true
+#   end
+# end
+#
+# # adds nginx.conf
+# template "#{node.nginx.dir}/sites-available/#{node.app.name}.conf" do
+#   source "nginx.conf.erb"
+#   mode "0644"
+# end
 
 # turns on website
 nginx_site "#{node.app.name}.conf" do
@@ -68,7 +68,7 @@ end
 
 # dependencies for opencv
 # @todo find and remove not needed packages
-['libmagickwand-dev', 'libopencv-dev', 'build-essential', 'checkinstall', 'cmake', 'yasm', 'libjpeg-dev', 'libjasper-dev', 'libavcodec-dev', 'libavformat-dev', 'libswscale-dev', 'libdc1394-22-dev', 'libxine-dev', 'libgstreamer0.10-dev', 'libgstreamer-plugins-base0.10-dev', 'libv4l-dev', 'python-dev', 'python-numpy', 'libtbb-dev', 'libqt4-dev', 'libgtk2.0-dev', 'qt5-default',  'qttools5-dev-tools' ].each do |apt|
+['libmagickwand-dev', 'libopencv-dev', 'checkinstall', 'cmake', 'yasm', 'libgstreamer0.10-dev', 'libgstreamer-plugins-base0.10-dev', 'libv4l-dev', 'python-dev', 'python-numpy', 'libtbb-dev', 'qt4-dev-tools', 'libqt4-core', 'libqt4-dev', 'libqt4-gui', 'libgtk2.0-dev'].each do |apt|
   package apt do
     action :upgrade
     options "--force-yes"
@@ -77,17 +77,17 @@ end
 
 # downloads and installs opencv
 bash "download_opencv" do
-  not_if {::File.exists?("/home/#{node.user.name}/opencv-#{node.opencv.version}/build")}
+  not_if {::File.exists?("/home/#{node.user.name}/opencv-#{node.opencv.version}")}
   cwd "/home/#{node.user.name}"
   code <<-EOH
-    wget -O OpenCV-#{node.opencv.version} #{node.opencv.url} && tar -zxf OpenCV-#{node.opencv.version} && cd opencv-#{node.opencv.version} && mkdir build
+    wget -O OpenCV-#{node.opencv.version} #{node.opencv.url} && tar -zxf OpenCV-#{node.opencv.version} && cd opencv-#{node.opencv.version}
   EOH
 end
 
 bash "install_opencv" do
-  not_if {system("pkg-config --modversion opencv"); $?.success?}
-  cwd "/home/#{node.user.name}/opencv-#{node.opencv.version}/build"
+  not_if {::File.exists?("/home/#{node.user.name}/opencv-#{node.opencv.version}/build")}
+  cwd "/home/#{node.user.name}/opencv-#{node.opencv.version}"
   code <<-EOH
-    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D BUILD_EXAMPLES=ON -D WITH_QT=ON -D WITH_OPENGL=ON .. && make && sudo make install && sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf' &&  sudo ldconfig
+    mkdir build && cd build && cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D BUILD_EXAMPLES=ON -D WITH_QT=ON -D WITH_OPENGL=ON .. && make && sudo make install && sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf' &&  sudo ldconfig
   EOH
 end
