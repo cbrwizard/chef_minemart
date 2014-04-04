@@ -1,8 +1,7 @@
 {
   "run_list": [
-    "recipe[opencv]",
     "recipe[rvm::user]",
-    "recipe[nginx::source]",
-    "recipe[minemart]"
+    "recipe[minemart]",
+    "recipe[nginx::source]"
   ]
 }
