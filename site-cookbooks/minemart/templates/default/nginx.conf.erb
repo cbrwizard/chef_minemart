@@ -16,7 +16,7 @@ events {
 }
 
 http {
-  passenger_root /home/<%= node[:user][:name] %>/.rvm/gems/<%= node[:rvm][:default_ruby] %>/gems/passenger-<%= node[:nginx][:passenger][:version] %>;
+  passenger_root /home/<%= node[:user][:name] %>/.rvm/gems/<%= node[:rvm][:default_ruby] %>/gems/passenger-<%= node[:passenger][:version] %>;
   passenger_ruby /home/<%= node[:user][:name] %>/.rvm/wrappers/<%= node[:rvm][:default_ruby] %>/ruby;
 
   include       mime.types;

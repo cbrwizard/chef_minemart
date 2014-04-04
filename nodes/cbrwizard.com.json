@@ -3,8 +3,7 @@
     "recipe[ssh_known_hosts]",
     "recipe[rvm::user]",
     "recipe[minemart::memory]",
-    "recipe[minemart::prepare_passenger]",
-    "recipe[nginx::source]",
+    "recipe[minemart::passenger]",
     "recipe[minemart]"
   ]
 }
