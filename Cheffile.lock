@@ -6,6 +6,7 @@ SITE
       rsyslog (>= 0.0.0)
     build-essential (2.0.0)
     chef_gem (0.1.0)
+    cmake (0.2.0)
     ohai (1.1.12)
     rsyslog (1.12.2)
     runit (1.5.10)
@@ -30,6 +31,15 @@ GIT
       yum-epel (~> 0.3)
 
 GIT
+  remote: https://github.com/elitmus/opencv-cookbook.git
+  ref: master
+  sha: 8f5c398b8988599a1e7484b196a70dc53984d319
+  specs:
+    opencv (0.0.1)
+      build-essential (>= 0.0.0)
+      cmake (>= 0.0.0)
+
+GIT
   remote: https://github.com/fnichol/chef-rvm
   ref: master
   sha: dd58087e7399097a9b9df4e2e7235908aace2afd
@@ -39,6 +49,7 @@ GIT
 
 DEPENDENCIES
   nginx (>= 0)
+  opencv (>= 0)
   runit (>= 0)
   rvm (>= 0)
 
