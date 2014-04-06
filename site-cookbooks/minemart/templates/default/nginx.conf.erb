@@ -8,7 +8,7 @@ worker_priority -5;
 #error_log  logs/error.log  notice;
 #error_log  logs/error.log  info;
 
-pid        logs/nginx.pid;
+pid logs/nginx.pid;
 
 events {
   use epoll;
@@ -16,18 +16,19 @@ events {
 }
 
 http {
-  passenger_root /home/<%= node[:user][:name] %>/.rvm/gems/<%= node[:rvm][:default_ruby] %>/gems/passenger-<%= node[:passenger][:version] %>;
-  passenger_ruby /home/<%= node[:user][:name] %>/.rvm/wrappers/<%= node[:rvm][:default_ruby] %>/ruby;
+  passenger_root /opt/chef/embedded/lib/ruby/gems/1.9.1/gems/passenger-4.0.40;
+  passenger_ruby /opt/chef/embedded/bin/ruby;
 
-  include       mime.types;
-  default_type  application/octet-stream;
 
-  #access_log  logs/access.log  main;
+  include  mime.types;
+  default_type application/octet-stream;
 
-  sendfile        on;
-  tcp_nopush     on;
+  #access_log logs/access.log main;
 
-  keepalive_timeout  65;
+  sendfile on;
+  tcp_nopush on;
+
+  keepalive_timeout 65;
 
   passenger_pool_idle_time 1000;
 
@@ -41,7 +42,7 @@ http {
   gzip_vary on;
 
   server {
-    listen       80;
+    listen 80;
     server_name  <%= node[:app][:domain] %>;
     root /home/<%= node[:user][:name] %>/apps/<%= node[:app][:name] %>/current/public;
     passenger_enabled on;

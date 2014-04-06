@@ -1,14 +1,9 @@
 SITE
   remote: http://community.opscode.com/api/v1
   specs:
-    apt (2.3.8)
-    bluepill (2.3.1)
-      rsyslog (>= 0.0.0)
     build-essential (2.0.0)
     chef_gem (0.1.0)
-    ohai (1.1.12)
     partial_search (1.0.8)
-    rsyslog (1.12.2)
     runit (1.5.10)
       build-essential (>= 0.0.0)
       yum (~> 3.0)
@@ -20,19 +15,6 @@ SITE
       yum (~> 3.0)
 
 GIT
-  remote: git://github.com/opscode-cookbooks/nginx.git
-  ref: master
-  sha: 609b9191c95bf33430962c9e57f224fc00c51680
-  specs:
-    nginx (2.5.1)
-      apt (~> 2.2)
-      bluepill (~> 2.3)
-      build-essential (~> 2.0)
-      ohai (~> 1.1)
-      runit (~> 1.2)
-      yum-epel (~> 0.3)
-
-GIT
   remote: https://github.com/fnichol/chef-rvm
   ref: master
   sha: dd58087e7399097a9b9df4e2e7235908aace2afd
@@ -41,7 +23,6 @@ GIT
       chef_gem (>= 0.0.0)
 
 DEPENDENCIES
-  nginx (>= 0)
   runit (>= 0)
   rvm (>= 0)
   ssh_known_hosts (>= 0)

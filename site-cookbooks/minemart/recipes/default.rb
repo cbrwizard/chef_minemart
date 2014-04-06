@@ -1,18 +1,5 @@
 # Note: user is added manually because of complicated things
 
-# add github to list of knows hosts
-ssh_known_hosts_entry 'github.com'
-
-# fixes locales
-# @todo: make it launch only once
-bash "fix_locales" do
-  user "root"
-  code <<-EOH
-    sudo locale-gen en_US ru_RU.UTF-8
-    dpkg-reconfigure locales
-  EOH
-end
-
 #--installs needed packages
 #postgresql
 package "postgresql-9.1"
@@ -31,13 +18,6 @@ end
 gem_package 'capistrano' do
   version '2.15'
 end
-
-# # turns on website
-# nginx_site "#{node.app.name}.conf" do
-#   cookbook "minemart"
-#   template 'nginx.conf.erb'
-#   action :enable
-# end
 
 # dependencies for opencv
 # @todo find and remove not needed packages
@@ -63,4 +43,9 @@ bash "install_opencv" do
   code <<-EOH
     mkdir build && cd build && cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D BUILD_EXAMPLES=ON -D WITH_QT=ON -D WITH_OPENGL=ON .. && make && sudo make install && sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf' &&  sudo ldconfig
   EOH
+end
+
+# installs the main gems for minemart
+execute 'install tricky gems' do
+  command 'gem install ruby-opencv v 0.0.10 && gem install capybara-webkit'
 end

@@ -2,7 +2,7 @@
   "run_list": [
     "recipe[ssh_known_hosts]",
     "recipe[rvm::user]",
-    "recipe[minemart::memory]",
+    "recipe[minemart::system]",
     "recipe[minemart::passenger]",
     "recipe[minemart]"
   ]
