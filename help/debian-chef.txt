@@ -1,0 +1,18 @@
+// установить chef
+$ sudo apt-get install chef
+
+//Создает chef solo
+$ knife solo init .
+
+//Создает librarian - аналог Gemfile для cookbooks
+$ librarian-chef init
+
+//Устанавливает все cookbooks
+// $ gem install librarian-chef
+$ librarian-chef install
+
+//Готовит пустой сервак к деплою шефа
+$ knife solo prepare root@cbrwizard.com
+
+//Настраивает сервак
+$ knife solo cook root@cbrwizard.com

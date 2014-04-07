@@ -44,8 +44,3 @@ bash "install_opencv" do
     mkdir build && cd build && cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D BUILD_EXAMPLES=ON -D WITH_QT=ON -D WITH_OPENGL=ON .. && make && sudo make install && sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf' &&  sudo ldconfig
   EOH
 end
-
-# installs the main gems for minemart
-execute 'install tricky gems' do
-  command 'gem install ruby-opencv v 0.0.10 && gem install capybara-webkit'
-end

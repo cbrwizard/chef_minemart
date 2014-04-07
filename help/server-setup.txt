@@ -1,0 +1,57 @@
+How-to create server:
+
+1. create server
+2. log into there 
+// $ ssh root@cbrwizard.com
+	3. $ sudo useradd -d /home/USERNAME -s /bin/bash -m USERNAME -g sudo && sudo passwd USERNAME
+	// $ sudo useradd -d /home/minemart -s /bin/bash -m minemart -g sudo && sudo passwd minemart
+	4. sudo apt-get update && sudo apt-get --yes --force-yes upgrade && sudo reboot
+
+5. $ ssh-copy-id USERNAME@SERVERIP
+// $ ssh-copy-id minemart@cbrwizard.com
+
+// change dir to chef repo with all recipes etc
+6. cd ~/chef-repo
+	7. $ knife solo bootstrap USERNAME@SERVERIP
+	// $ knife solo bootstrap minemart@cbrwizard.com
+	// $ knife solo prepare minemart@cbrwizard.com
+	// $ knife solo cook minemart@cbrwizard.com
+
+
+Deploy code:
+8. $ cd ~/minemart
+//make sure to check config/deploy.rb for branch settings, etc.
+
+9. $ cap -v deploy:setup && cap deploy:check
+10. $ cap deploy:cold
+11. ssh minemart@cbrwizard.com
+12. cd ~/apps/minemart/
+
+
+IF failed permissions to create folders:
+	ssh to server
+	$ rm -rf /apps
+
+IF failed during bundle:
+	$ cap deploy
+
+IF failed to ssh:
+	$ ssh-keygen -f "/home/cbrwizard/.ssh/known_hosts" -R cbrwizard.com
+
+IF failed github:
+	1. ssh to it
+		2. $ ssh git@github.com
+			yes
+
+IF failed chef:
+	$ knife solo cook USERNAME@SERVERIP
+	// $ knife solo cook minemart@cbrwizard.com
+
+
+IF failed chef during opencv install:
+	ssh to it
+	$ rm -rf opencv-2.4.6.1
+	$ knife solo cook USERNAME@SERVERIP
+
+IF locale.Error:
+	$ sudo localedef --no-archive -c -i ru_RU -f UTF-8 ru

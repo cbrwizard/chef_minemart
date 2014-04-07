@@ -8,6 +8,7 @@ execute "install nginx with passenger" do
   command "passenger-install-nginx-module --auto --auto-download --prefix=/opt/nginx"
 end
 
+# adds nginx conf file
 template "/opt/nginx/conf/nginx.conf" do
   user 'minemart'
   source "nginx.conf.erb"
