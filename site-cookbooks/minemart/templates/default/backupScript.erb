@@ -1,0 +1,8 @@
+#!/bin/bash
+DATE="$(date +%d_%m_%H-%M)"
+
+PGPASSWORD=<%= node[:pg][:user_password] %> pg_dump -U <%= node[:pg][:user_name] %> -h localhost minemart_production > ~/backups/"$DATE"
+
+tar cjf ~/backups/"$DATE".tar.bz2 ~/backups/"$DATE"
+rm ~/backups/"$DATE"
+

@@ -1,27 +1,24 @@
-# Note: user is added manually because of complicated things
-
 #--installs needed packages
 #postgresql
+# @todo: add pg recipe to auto create pg user and update pg
 package "postgresql-9.1"
 package "libpq-dev"
 package "postgresql-contrib"
 
 # redis
 package "tcl8.5"
+ppa "rwky/redis"
 package "redis-server"
 
 #--installs main gems
 gem_package 'bundler'
-gem_package "rails" do
-  version "4.0.0"
-end
 gem_package 'capistrano' do
   version '2.15'
 end
 
 # dependencies for opencv
 # @todo find and remove not needed packages
-['libmagickwand-dev', 'libopencv-dev', 'checkinstall', 'cmake', 'yasm', 'libgstreamer0.10-dev', 'libgstreamer-plugins-base0.10-dev', 'libv4l-dev', 'python-dev', 'python-numpy', 'libtbb-dev', 'qt4-dev-tools', 'libqt4-core', 'libqt4-dev', 'libqt4-gui', 'libgtk2.0-dev'].each do |apt|
+['libmagickwand-dev', 'libopencv-dev', 'checkinstall', 'cmake', 'yasm', 'libgstreamer0.10-dev', 'libgstreamer-plugins-base0.10-dev', 'libv4l-dev', 'python-dev', 'python-numpy', 'libtbb-dev', 'qt4-dev-tools', 'libqt4-core', 'libqt4-dev', 'libqt4-gui', 'libgtk2.0-dev', 'imagemagick'].each do |apt|
   package apt do
     action :upgrade
     options "--force-yes"
@@ -43,4 +40,8 @@ bash "install_opencv" do
   code <<-EOH
     mkdir build && cd build && cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D BUILD_EXAMPLES=ON -D WITH_QT=ON -D WITH_OPENGL=ON .. && make && sudo make install && sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf' &&  sudo ldconfig
   EOH
+end
+
+bash "restart nginx" do
+  command "sudo /etc/init.d/nginx restart"
 end

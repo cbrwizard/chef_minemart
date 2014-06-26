@@ -5,7 +5,8 @@ site 'http://community.opscode.com/api/v1'
 
 cookbook 'runit'
 cookbook 'ssh_known_hosts'
-cookbook 'rvm', :git => 'https://github.com/fnichol/chef-rvm'
+cookbook 'chef-apt-repo', git: 'https://github.com/sometimesfood/chef-apt-repo.git'
+cookbook 'rvm', git: 'https://github.com/fnichol/chef-rvm'
 
 # cookbook 'postgresql',
 #   :git => 'https://github.com/findsyou/cookbooks',

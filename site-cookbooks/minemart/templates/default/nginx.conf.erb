@@ -8,7 +8,8 @@ worker_priority -5;
 #error_log  logs/error.log  notice;
 #error_log  logs/error.log  info;
 
-pid logs/nginx.pid;
+#?
+#pid logs/nginx.pid;
 
 events {
   use epoll;
@@ -16,12 +17,16 @@ events {
 }
 
 http {
-  passenger_root /opt/chef/embedded/lib/ruby/gems/1.9.1/gems/passenger-4.0.40;
-  passenger_ruby /opt/chef/embedded/bin/ruby;
-
+  passenger_root /home/<%= node[:user][:name] %>/.rvm/gems/<%= node[:app][:ruby] %>/gems/passenger-4.0.40;
+  passenger_ruby /home/<%= node[:user][:name] %>/.rvm/gems/<%= node[:app][:ruby] %>/wrappers/ruby;
 
   include  mime.types;
   default_type application/octet-stream;
+
+  #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+  #                  '$status $body_bytes_sent "$http_referer" '
+  #                  '"$http_user_agent" "$http_x_forwarded_for"';
+
 
   #access_log logs/access.log main;
 
@@ -41,17 +46,39 @@ http {
   gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype font/x-woff;
   gzip_vary on;
 
+  server_names_hash_bucket_size 64;
+  # redirect from www to non-www
+  server {
+    listen 80;
+    server_name www.<%= node[:app][:domain] %>;
+    return 301 $scheme://www.<%= node[:app][:domain] %>$request_uri;
+  }
+
   server {
     listen 80;
     server_name  <%= node[:app][:domain] %>;
+
     root /home/<%= node[:user][:name] %>/apps/<%= node[:app][:name] %>/current/public;
     passenger_enabled on;
 
     client_max_body_size 10M;
     client_body_buffer_size 512k;
 
+    if (-f $document_root/system/maintenance.html) { return 503; }
+      error_page 503 @maintenance;
+      location @maintenance {
+        if (-f $request_filename) { break; }
+        rewrite  ^(.*)$  /system/maintenance.html last;
+        break;
+      }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
+
     location ~ ^/(assets|images|javascripts|stylesheets|swfs|system|fonts)/ {
-      root /home/<%= node[:user][:name] %>/apps/<%= node[:app][:name] %>/shared;
+      root /home/<%= node[:user][:name] %>/apps/<%= node[:app][:name] %>/current/public;
       gzip_static on;
       expires 50d;
       add_header Cache-Control public;
@@ -65,6 +92,7 @@ http {
       }
       break;
     }
+
     passenger_spawn_method smart;
     rails_app_spawner_idle_time 0;
   }

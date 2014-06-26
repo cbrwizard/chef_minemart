@@ -4,6 +4,10 @@
     "recipe[rvm::user]",
     "recipe[minemart::system]",
     "recipe[minemart::passenger]",
-    "recipe[minemart]"
+    "recipe[chef-apt-repo]",
+    "recipe[minemart]",
+    "recipe[minemart::god]",
+    "recipe[minemart::access]",
+    "recipe[minemart::restart]"
   ]
 }
